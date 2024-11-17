@@ -9,7 +9,7 @@ sf::Vector2i GridManager::SnapPositionToGrid(sf::Vector2f pos)
     return sf::Vector2i(newX, newY);
 }
 
-sf::Vector2f GridManager::SnapGridToPosition(sf::Vector2i gridPos)
+sf::Vector2f GridManager::GridToPosition(sf::Vector2i gridPos)
 {
     float x = gridPos.x * CELL_SIZE;
     float y = gridPos.y * CELL_SIZE;
