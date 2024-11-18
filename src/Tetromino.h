@@ -11,14 +11,17 @@ enum TetrominoShape
     S,
     Z,
     L,
+    J,
 };
 
 const std::map<TetrominoShape, std::vector<sf::Vector2i>> TetrominoShapes = {
-    {TetrominoShape::T, {{0, 0}, {1, 0}, {2, 0}, {1, 1}}},
     {TetrominoShape::O, {{0, 0}, {1, 0}, {0, 1}, {1, 1}}},
-    {TetrominoShape::I, {{0, 0}, {0, 1}, {0, 2}, {0, 3}}},
-    {TetrominoShape::S, {{1, 0}, {2, 0}, {0, 1}, {1, 1}}},
-    {TetrominoShape::Z, {{0, 0}, {1, 0}, {1, 1}, {2, 1}}},
+    {TetrominoShape::I, {{0, -1}, {0, 0}, {0, 1}, {0, 2}}},
+    {TetrominoShape::S, {{0, 0}, {1, 0}, {0, 1}, {-1, 1}}},
+    {TetrominoShape::Z, {{0, 0}, {-1, 0}, {0, 1}, {1, 1}}},
+    {TetrominoShape::L, {{0, 0}, {0, -1}, {0, 1}, {1, 1}}},
+    {TetrominoShape::J, {{0, 0}, {0, -1}, {0, 1}, {-1, 1}}},
+    {TetrominoShape::T, {{-1, 0}, {0, 0}, {1, 0}, {0, 1}}},
 };
 
 class Tetromino
@@ -32,8 +35,8 @@ private:
 public:
     Tetromino(sf::Texture &texture, TetrominoShape shape);
     Tetromino(sf::Color color, TetrominoShape shape);
-
-    void Update(float deltaTime);
+    
+    void Update(float deltaTime, sf::RenderWindow & window);
     void Rotate();
     void Draw(sf::RenderWindow &window);
 };

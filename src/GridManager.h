@@ -11,5 +11,6 @@ private:
 
 public:
     static sf::Vector2i SnapPositionToGrid(sf::Vector2f pos);
+    static sf::Vector2i SnapPositionToGrid(sf::Vector2i pos);
     static sf::Vector2f GridToPosition(sf::Vector2i gridPos);
 };

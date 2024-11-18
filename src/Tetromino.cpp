@@ -16,12 +16,21 @@ Tetromino::Tetromino(sf::Color color, TetrominoShape shape)
     body.setSize(sf::Vector2f(CELL_SIZE, CELL_SIZE));
 }
 
-void Tetromino::Update(float deltaTime)
-{
+void Tetromino::Update(float deltaTime, sf::RenderWindow & window)
+{    
+    auto mousePosition = sf::Mouse::getPosition(window) / 4;
+    currentGridPosition = GridManager::SnapPositionToGrid(mousePosition);
+    printf("\nCurrent grid pos (X:%i;Y:%i)\n", currentGridPosition.x, currentGridPosition.y);
 }
 
 void Tetromino::Rotate()
 {
+    for (auto &block : shape)
+    {
+        int temp = block.y;
+        block.y = block.x;
+        block.x = -temp;
+    }
 }
 
 void Tetromino::Draw(sf::RenderWindow &window)
