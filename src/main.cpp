@@ -15,7 +15,9 @@ int main()
     sf::Texture blockTexture;
     blockTexture.loadFromFile("assets/block_tiles.png");
 
-    Tetromino Tpiece(blockTexture, TetrominoShape::L);
+    GridManager manager;
+
+    Tetromino Tpiece(blockTexture, TetrominoShape::Z, manager);
 
     sf::Clock clock;
     while (window.isOpen())
@@ -42,9 +44,7 @@ int main()
 
         window.setView(view);
 
-        Tpiece.Update(deltaTime, window);
-
-        auto targetPos = GridManager::SnapPositionToGrid(sf::Vector2f(sf::Mouse::getPosition(window) / WINDOW_ASPECT_RATIO_MULTIPLIER));        
+        Tpiece.Update(deltaTime);
 
         window.clear();
         Tpiece.Draw(window);

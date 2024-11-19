@@ -1,7 +1,7 @@
 #include "Tetromino.h"
 #include "GridManager.h"
 
-Tetromino::Tetromino(sf::Texture &texture, TetrominoShape shape)
+Tetromino::Tetromino(sf::Texture &texture, TetrominoShape shape, GridManager &manager) : gridManager(manager)
 {
     this->shape = TetrominoShapes.at(shape);
     body.setTexture(&texture);
@@ -9,18 +9,50 @@ Tetromino::Tetromino(sf::Texture &texture, TetrominoShape shape)
     body.setSize(sf::Vector2f(CELL_SIZE, CELL_SIZE));
 }
 
-Tetromino::Tetromino(sf::Color color, TetrominoShape shape)
+Tetromino::Tetromino(sf::Color color, TetrominoShape shape, GridManager &manager) : gridManager(manager)
 {
     this->shape = TetrominoShapes.at(shape);
     body.setFillColor(color);
     body.setSize(sf::Vector2f(CELL_SIZE, CELL_SIZE));
 }
 
-void Tetromino::Update(float deltaTime, sf::RenderWindow & window)
-{    
-    auto mousePosition = sf::Mouse::getPosition(window) / 4;
-    currentGridPosition = GridManager::SnapPositionToGrid(mousePosition);
-    printf("\nCurrent grid pos (X:%i;Y:%i)\n", currentGridPosition.x, currentGridPosition.y);
+void Tetromino::Update(float deltaTime)
+{
+    totalTime += deltaTime;
+    if (totalTime >= moveDelay)
+    {
+        totalTime = 0.0f;
+        MoveDown();
+    }
+}
+
+void Tetromino::MoveDown()
+{
+    RemoveOccupiedCells();
+    sf::Vector2i newPosition = sf::Vector2i(currentGridPosition.x, currentGridPosition.y + 1);
+    if (!gridManager.IsPositionValid(newPosition))
+        return;
+
+    currentGridPosition = newPosition;
+    AddOccupiedCells();
+}
+
+void Tetromino::AddOccupiedCells()
+{
+    for (auto block : shape)
+    {
+        sf::Vector2i blockPosition = sf::Vector2i(currentGridPosition.x + block.x, currentGridPosition.y + block.y);
+        gridManager.MarkPositionAsOccupied(blockPosition);
+    }
+}
+
+void Tetromino::RemoveOccupiedCells()
+{
+    for (auto block : shape)
+    {
+        sf::Vector2i blockPosition = sf::Vector2i(currentGridPosition.x + block.x, currentGridPosition.y + block.y);
+        gridManager.RemovePositionAsOccupied(blockPosition);
+    }
 }
 
 void Tetromino::Rotate()
@@ -37,10 +69,9 @@ void Tetromino::Draw(sf::RenderWindow &window)
 {
     for (auto block : shape)
     {
-        int xGridPosition = currentGridPosition.x + block.x;
-        int yGridPosition = currentGridPosition.y + block.y;
+        sf::Vector2i newBlockPosition = sf::Vector2i(currentGridPosition.x + block.x, currentGridPosition.y + block.y);
 
-        body.setPosition(GridManager::GridToPosition(sf::Vector2i(xGridPosition, yGridPosition)));
+        body.setPosition(GridManager::GridToPosition(sf::Vector2i(newBlockPosition)));
         window.draw(body);
     }
 }

@@ -1,6 +1,9 @@
+#pragma once
+
 #include <SFML/Graphics.hpp>
 #include <map>
 #include <vector>
+#include "GridManager.h"
 
 enum TetrominoShape
 {
@@ -27,16 +30,24 @@ const std::map<TetrominoShape, std::vector<sf::Vector2i>> TetrominoShapes = {
 class Tetromino
 {
 private:
-    sf::RectangleShape body;
+    GridManager &gridManager;
     sf::Vector2i currentGridPosition = {4, 1};
-
+    sf::RectangleShape body;
     std::vector<sf::Vector2i> shape;
+    
+    float moveDelay = .65f;
+    float totalTime = 0.0f;
 
 public:
-    Tetromino(sf::Texture &texture, TetrominoShape shape);
-    Tetromino(sf::Color color, TetrominoShape shape);
-    
-    void Update(float deltaTime, sf::RenderWindow & window);
+    Tetromino(sf::Texture &texture, TetrominoShape shape, GridManager &manager);
+    Tetromino(sf::Color color, TetrominoShape shape, GridManager &manager);
+
+    void Update(float deltaTime);
     void Rotate();
     void Draw(sf::RenderWindow &window);
+    void MoveDown();
+
+private:
+    void AddOccupiedCells();
+    void RemoveOccupiedCells();
 };
