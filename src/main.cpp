@@ -17,13 +17,16 @@ int main()
 
     GridManager manager;
 
-    Tetromino Tpiece(blockTexture, TetrominoShape::Z, manager);
+    float defaultMovementDelay = 0.65f;
+    Tetromino Tpiece(blockTexture, TetrominoShape::I, manager);
 
     sf::Clock clock;
     while (window.isOpen())
     {
         float deltaTime = clock.restart().asSeconds();
-        
+
+        Tpiece.SetMovementDelay(defaultMovementDelay);
+
         for (auto event = sf::Event(); window.pollEvent(event);)
         {
             switch (event.type)
@@ -37,6 +40,9 @@ int main()
                 case sf::Keyboard::Scancode::R:
                     printf("Rotating Tetromino!!!");
                     Tpiece.Rotate();
+                    break;
+                case sf::Keyboard::Scancode::Down:
+                    Tpiece.SetMovementDelay(defaultMovementDelay / 3.0f);
                     break;
                 }
             }

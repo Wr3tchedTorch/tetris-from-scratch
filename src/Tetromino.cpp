@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Tetromino.h"
 #include "GridManager.h"
 
@@ -28,30 +29,27 @@ void Tetromino::Update(float deltaTime)
 
 void Tetromino::MoveDown()
 {
-    RemoveOccupiedCells();
+    for (auto block : shape)
+    {
+        sf::Vector2i blockPosition = sf::Vector2i(currentGridPosition.x + block.x, currentGridPosition.y + block.y + 1);
+        if (!gridManager.IsPositionValid(blockPosition))
+            return;
+    }
     sf::Vector2i newPosition = sf::Vector2i(currentGridPosition.x, currentGridPosition.y + 1);
-    if (!gridManager.IsPositionValid(newPosition))
-        return;
-
     currentGridPosition = newPosition;
-    AddOccupiedCells();
 }
 
-void Tetromino::AddOccupiedCells()
+void Tetromino::SetMovementDelay(float toMoveDelay)
+{
+    moveDelay = std::max(toMoveDelay, 0.0f);
+}
+
+void Tetromino::MarkCellsAsOccupied()
 {
     for (auto block : shape)
     {
         sf::Vector2i blockPosition = sf::Vector2i(currentGridPosition.x + block.x, currentGridPosition.y + block.y);
         gridManager.MarkPositionAsOccupied(blockPosition);
-    }
-}
-
-void Tetromino::RemoveOccupiedCells()
-{
-    for (auto block : shape)
-    {
-        sf::Vector2i blockPosition = sf::Vector2i(currentGridPosition.x + block.x, currentGridPosition.y + block.y);
-        gridManager.RemovePositionAsOccupied(blockPosition);
     }
 }
 

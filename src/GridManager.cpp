@@ -1,5 +1,5 @@
-#include "GridManager.h"
 #include <cmath>
+#include "GridManager.h"
 
 sf::Vector2i GridManager::SnapPositionToGrid(sf::Vector2f pos)
 {
@@ -23,7 +23,7 @@ sf::Vector2f GridManager::GridToPosition(sf::Vector2i gridPos)
 
 bool GridManager::IsPositionValid(sf::Vector2i pos)
 {
-    bool isOutOfBounds = (pos.x < 0 || pos.x > COLUMN_COUNT) || (pos.y < 0 || pos.y > ROW_COUNT);
+    bool isOutOfBounds = (pos.x < 0 || pos.x >= COLUMN_COUNT) || (pos.y < 0 || pos.y >= ROW_COUNT);
     return !isOutOfBounds && occupiedCells.find(pos) == occupiedCells.end();
 }
 

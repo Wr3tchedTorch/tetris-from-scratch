@@ -46,8 +46,8 @@ public:
     void Rotate();
     void Draw(sf::RenderWindow &window);
     void MoveDown();
+    void SetMovementDelay(float toMoveDelay);
 
 private:
-    void AddOccupiedCells();
-    void RemoveOccupiedCells();
+    void MarkCellsAsOccupied();
 };
