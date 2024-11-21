@@ -37,7 +37,7 @@ private:
     
     float moveDelay = .65f;
     float totalTime = 0.0f;
-    bool isOnGround = false;
+    bool isOnGround;
 
 public:
     Tetromino(sf::Texture &texture, TetrominoShape shape, GridManager &manager);

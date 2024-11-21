@@ -8,6 +8,8 @@ Tetromino::Tetromino(sf::Texture &texture, TetrominoShape shape, GridManager &ma
     body.setTexture(&texture);
     body.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(CELL_SIZE, CELL_SIZE)));
     body.setSize(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+    
+    isOnGround = false;
 }
 
 Tetromino::Tetromino(sf::Color color, TetrominoShape shape, GridManager &manager) : gridManager(manager)
@@ -15,6 +17,8 @@ Tetromino::Tetromino(sf::Color color, TetrominoShape shape, GridManager &manager
     this->shape = TetrominoShapes.at(shape);
     body.setFillColor(color);
     body.setSize(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+
+    isOnGround = false;
 }
 
 void Tetromino::Update(float deltaTime)
