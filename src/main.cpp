@@ -39,7 +39,8 @@ int main()
                 {
                 case sf::Keyboard::Scancode::R:
                     printf("Rotating Tetromino!!!");
-                    Tpiece.Rotate();
+                    if (!Tpiece.GetIsOnGround())
+                        Tpiece.Rotate();
                     break;
                 case sf::Keyboard::Scancode::Down:
                     Tpiece.SetMovementDelay(defaultMovementDelay / 3.0f);
@@ -50,7 +51,7 @@ int main()
 
         window.setView(view);
 
-        Tpiece.Update(deltaTime);
+        Tpiece.Update(deltaTime);        
 
         window.clear();
         Tpiece.Draw(window);

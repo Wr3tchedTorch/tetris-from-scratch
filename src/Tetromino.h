@@ -37,16 +37,18 @@ private:
     
     float moveDelay = .65f;
     float totalTime = 0.0f;
+    bool isOnGround = false;
 
 public:
     Tetromino(sf::Texture &texture, TetrominoShape shape, GridManager &manager);
-    Tetromino(sf::Color color, TetrominoShape shape, GridManager &manager);
+    Tetromino(sf::Color color, TetrominoShape shape, GridManager &manager);    
 
     void Update(float deltaTime);
     void Rotate();
     void Draw(sf::RenderWindow &window);
-    void MoveDown();
+    bool MoveDown();
     void SetMovementDelay(float toMoveDelay);
+    bool GetIsOnGround();
 
 private:
     void MarkCellsAsOccupied();

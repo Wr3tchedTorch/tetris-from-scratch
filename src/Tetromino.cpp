@@ -23,25 +23,35 @@ void Tetromino::Update(float deltaTime)
     if (totalTime >= moveDelay)
     {
         totalTime = 0.0f;
-        MoveDown();
+        isOnGround = !MoveDown();
     }
 }
 
-void Tetromino::MoveDown()
+bool Tetromino::MoveDown()
 {
     for (auto block : shape)
     {
         sf::Vector2i blockPosition = sf::Vector2i(currentGridPosition.x + block.x, currentGridPosition.y + block.y + 1);
         if (!gridManager.IsPositionValid(blockPosition))
-            return;
+        {
+            MarkCellsAsOccupied();
+            return false;
+        }
     }
+
     sf::Vector2i newPosition = sf::Vector2i(currentGridPosition.x, currentGridPosition.y + 1);
     currentGridPosition = newPosition;
+    return true;
 }
 
 void Tetromino::SetMovementDelay(float toMoveDelay)
 {
     moveDelay = std::max(toMoveDelay, 0.0f);
+}
+
+bool Tetromino::GetIsOnGround()
+{
+    return isOnGround;
 }
 
 void Tetromino::MarkCellsAsOccupied()
