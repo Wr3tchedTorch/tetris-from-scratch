@@ -2,20 +2,13 @@
 #include "Tetromino.h"
 #include "GridManager.h"
 
-Tetromino::Tetromino(sf::Texture &texture, TetrominoShape shape, GridManager &manager) : gridManager(manager)
+Tetromino::Tetromino(Shape myShape, GridManager &manager, sf::Texture &texture, sf::Vector2i textureCoordinates) : gridManager(manager)
 {
-    this->shape = TetrominoShapes.at(shape);
-    body.setTexture(&texture);
-    body.setTextureRect(sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(CELL_SIZE, CELL_SIZE)));
-    body.setSize(sf::Vector2f(CELL_SIZE, CELL_SIZE));
-    
-    isOnGround = false;
-}
+    myShape = myShape;
+    myShapeCoordinates = shapeBlockCoordinates.at(myShape);
 
-Tetromino::Tetromino(sf::Color color, TetrominoShape shape, GridManager &manager) : gridManager(manager)
-{
-    this->shape = TetrominoShapes.at(shape);
-    body.setFillColor(color);
+    body.setTexture(&texture);
+    body.setTextureRect(sf::IntRect(textureCoordinates * CELL_SIZE, sf::Vector2i(CELL_SIZE, CELL_SIZE)));
     body.setSize(sf::Vector2f(CELL_SIZE, CELL_SIZE));
 
     isOnGround = false;
@@ -33,7 +26,7 @@ void Tetromino::Update(float deltaTime)
 
 bool Tetromino::MoveDown()
 {
-    for (auto block : shape)
+    for (auto block : myShapeCoordinates)
     {
         sf::Vector2i blockPosition = sf::Vector2i(currentGridPosition.x + block.x, currentGridPosition.y + block.y + 1);
         if (!gridManager.IsPositionValid(blockPosition))
@@ -60,7 +53,7 @@ bool Tetromino::GetIsOnGround()
 
 void Tetromino::MarkCellsAsOccupied()
 {
-    for (auto block : shape)
+    for (auto block : myShapeCoordinates)
     {
         sf::Vector2i blockPosition = sf::Vector2i(currentGridPosition.x + block.x, currentGridPosition.y + block.y);
         gridManager.MarkPositionAsOccupied(blockPosition);
@@ -69,7 +62,10 @@ void Tetromino::MarkCellsAsOccupied()
 
 void Tetromino::Rotate()
 {
-    for (auto &block : shape)
+    if (myShape == Shape::O)
+        return;
+
+    for (auto &block : myShapeCoordinates)
     {
         int temp = block.y;
         block.y = block.x;
@@ -79,7 +75,7 @@ void Tetromino::Rotate()
 
 void Tetromino::Draw(sf::RenderWindow &window)
 {
-    for (auto block : shape)
+    for (auto block : myShapeCoordinates)
     {
         sf::Vector2i newBlockPosition = sf::Vector2i(currentGridPosition.x + block.x, currentGridPosition.y + block.y);
 

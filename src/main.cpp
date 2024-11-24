@@ -5,11 +5,9 @@
 
 #include "GridManager.h"
 #include "Tetromino.h"
+#include "Game.h"
 
 static const int WINDOW_ASPECT_RATIO_MULTIPLIER = 4;
-
-TetrominoShape GetRandomTetrominoShape();
-Tetromino SpawnRandomTetromino(sf::Texture &texture, GridManager &gridManager);
 
 int main()
 {
@@ -24,12 +22,11 @@ int main()
     blockTexture.loadFromFile("assets/block_tiles.png");
 
     GridManager manager;
+    Game gameManager;
 
     float defaultMovementDelay = 0.65f;
 
-    std::vector<Tetromino> tetrominosInTheGame;
-    tetrominosInTheGame.push_back(SpawnRandomTetromino(blockTexture, manager));
-    Tetromino *currentTetrominoPointer = &tetrominosInTheGame.back();
+    Tetromino *currentTetrominoPointer = gameManager.SpawnRandomTetromino(blockTexture, manager);
 
     sf::Clock clock;
     while (window.isOpen())
@@ -38,8 +35,7 @@ int main()
 
         if (currentTetrominoPointer->GetIsOnGround())
         {
-            tetrominosInTheGame.push_back(SpawnRandomTetromino(blockTexture, manager));
-            currentTetrominoPointer = &tetrominosInTheGame.back();
+            currentTetrominoPointer = gameManager.SpawnRandomTetromino(blockTexture, manager);
         }
 
         currentTetrominoPointer->SetMovementDelay(defaultMovementDelay);
@@ -53,13 +49,12 @@ int main()
             case sf::Event::KeyPressed:
                 switch (event.key.scancode)
                 {
-                case sf::Keyboard::Scancode::R:
-                    printf("Rotating Tetromino!!!");
-                    if (!currentTetrominoPointer->GetIsOnGround())
-                        currentTetrominoPointer->Rotate();
-                    break;
                 case sf::Keyboard::Scancode::Down:
                     currentTetrominoPointer->SetMovementDelay(defaultMovementDelay / 4.0f);
+                    break;
+                case sf::Keyboard::Scancode::R:
+                    if (!currentTetrominoPointer->GetIsOnGround())
+                        currentTetrominoPointer->Rotate();
                     break;
                 }
             }
@@ -69,25 +64,11 @@ int main()
 
         currentTetrominoPointer->Update(deltaTime);
         window.clear();
-        for (Tetromino &item : tetrominosInTheGame)
-            item.Draw(window);
+        gameManager.Draw(window);
         window.display();
     }
 
     delete currentTetrominoPointer;
 
     return 0;
-}
-
-TetrominoShape GetRandomTetrominoShape()
-{
-    int randomIndex = rand() % 7;
-    return static_cast<TetrominoShape>(randomIndex);
-}
-
-Tetromino SpawnRandomTetromino(sf::Texture &texture, GridManager &gridManager)
-{
-    TetrominoShape shape = GetRandomTetrominoShape();
-    Tetromino toTetromino(texture, shape, gridManager);
-    return toTetromino;
 }

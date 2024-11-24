@@ -17,6 +17,7 @@ add_executable(TetrisFromScratch
     src/main.cpp
     src/GridManager.cpp
     src/Tetromino.cpp
+    src/Game.cpp
 )
 target_link_libraries(TetrisFromScratch PRIVATE sfml-graphics)
 target_compile_features(TetrisFromScratch PRIVATE cxx_std_17)

@@ -5,43 +5,46 @@
 #include <vector>
 #include "GridManager.h"
 
-enum TetrominoShape
-{
-    NONE = -1,
-    T,
-    O,
-    I,
-    S,
-    Z,
-    L,
-    J,
-};
-
-const std::map<TetrominoShape, std::vector<sf::Vector2i>> TetrominoShapes = {
-    {TetrominoShape::O, {{0, 0}, {1, 0}, {0, 1}, {1, 1}}},
-    {TetrominoShape::I, {{0, -1}, {0, 0}, {0, 1}, {0, 2}}},
-    {TetrominoShape::S, {{0, 0}, {1, 0}, {0, 1}, {-1, 1}}},
-    {TetrominoShape::Z, {{0, 0}, {-1, 0}, {0, 1}, {1, 1}}},
-    {TetrominoShape::L, {{0, 0}, {0, -1}, {0, 1}, {1, 1}}},
-    {TetrominoShape::J, {{0, 0}, {0, -1}, {0, 1}, {-1, 1}}},
-    {TetrominoShape::T, {{-1, 0}, {0, 0}, {1, 0}, {0, 1}}},
-};
-
 class Tetromino
 {
+public:
+    enum Shape
+    {
+        NONE = -1,
+        T,
+        O,
+        I,
+        S,
+        Z,
+        L,
+        J,
+        COUNT,
+    };    
+
 private:
     GridManager &gridManager;
     sf::Vector2i currentGridPosition = {4, 1};
     sf::RectangleShape body;
-    std::vector<sf::Vector2i> shape;
-    
+
+    std::vector<sf::Vector2i> myShapeCoordinates;
+    Shape myShape;
+
     float moveDelay = .65f;
     float totalTime = 0.0f;
     bool isOnGround;
 
+    const std::map<Tetromino::Shape, std::vector<sf::Vector2i>> shapeBlockCoordinates = {
+        {Tetromino::Shape::O, {{0, 0}, {1, 0}, {0, 1}, {1, 1}}},
+        {Tetromino::Shape::I, {{0, -1}, {0, 0}, {0, 1}, {0, 2}}},
+        {Tetromino::Shape::S, {{0, 0}, {1, 0}, {0, 1}, {-1, 1}}},
+        {Tetromino::Shape::Z, {{0, 0}, {-1, 0}, {0, 1}, {1, 1}}},
+        {Tetromino::Shape::L, {{0, 0}, {0, -1}, {0, 1}, {1, 1}}},
+        {Tetromino::Shape::J, {{0, 0}, {0, -1}, {0, 1}, {-1, 1}}},
+        {Tetromino::Shape::T, {{-1, 0}, {0, 0}, {1, 0}, {0, 1}}},
+    };    
+
 public:
-    Tetromino(sf::Texture &texture, TetrominoShape shape, GridManager &manager);
-    Tetromino(sf::Color color, TetrominoShape shape, GridManager &manager);    
+    Tetromino(Shape myShape, GridManager &manager, sf::Texture &texture, sf::Vector2i textureCoordinates = {0, 0});
 
     void Update(float deltaTime);
     void Rotate();
@@ -52,4 +55,5 @@ public:
 
 private:
     void MarkCellsAsOccupied();
+    
 };
