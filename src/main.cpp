@@ -53,8 +53,8 @@ int main()
                     currentTetrominoPointer->SetMovementDelay(defaultMovementDelay / 4.0f);
                     break;
                 case sf::Keyboard::Scancode::R:
-                    if (!currentTetrominoPointer->GetIsOnGround())
-                        currentTetrominoPointer->Rotate();
+                    std::cout << "Rotating tetromino";
+                    currentTetrominoPointer->Rotate();
                     break;
                 }
             }

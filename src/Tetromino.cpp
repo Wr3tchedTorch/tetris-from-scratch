@@ -4,8 +4,8 @@
 
 Tetromino::Tetromino(Shape myShape, GridManager &manager, sf::Texture &texture, sf::Vector2i textureCoordinates) : gridManager(manager)
 {
-    myShape = myShape;
-    myShapeCoordinates = shapeBlockCoordinates.at(myShape);
+    this->myShape = myShape;
+    myShapeCoordinates = shapeBlockCoordinates.at(this->myShape);
 
     body.setTexture(&texture);
     body.setTextureRect(sf::IntRect(textureCoordinates * CELL_SIZE, sf::Vector2i(CELL_SIZE, CELL_SIZE)));
@@ -65,12 +65,17 @@ void Tetromino::Rotate()
     if (myShape == Shape::O)
         return;
 
-    for (auto &block : myShapeCoordinates)
+    std::vector<sf::Vector2i> toCoordinates;
+    toCoordinates.reserve(myShapeCoordinates.size());
+
+    for (const auto &block : myShapeCoordinates)
     {
-        int temp = block.y;
-        block.y = block.x;
-        block.x = -temp;
+        sf::Vector2i newPos = {-block.y, block.x};
+        if (!gridManager.IsPositionValid({currentGridPosition.x + newPos.x, currentGridPosition.y + newPos.y}))
+            return;
+        toCoordinates.push_back(newPos);
     }
+    myShapeCoordinates = toCoordinates;
 }
 
 void Tetromino::Draw(sf::RenderWindow &window)
