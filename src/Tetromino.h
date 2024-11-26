@@ -49,11 +49,16 @@ public:
     void Update(float deltaTime);
     void Rotate();
     void Draw(sf::RenderWindow &window);
+
     bool MoveDown();
+    void MoveLeft();
+    void MoveRight();
+
     void SetMovementDelay(float toMoveDelay);
     bool GetIsOnGround();
 
 private:
+    bool Move(int xOffset = 0, int yOffset = 0);
     void MarkCellsAsOccupied();
     
 };

@@ -26,17 +26,32 @@ void Tetromino::Update(float deltaTime)
 
 bool Tetromino::MoveDown()
 {
+    return Move(0, 1);
+}
+
+void Tetromino::MoveLeft()
+{
+    Move(-1, 0);
+}
+
+void Tetromino::MoveRight()
+{
+    Move(1, 0);
+}
+
+bool Tetromino::Move(int xOffset, int yOffset)
+{
     for (auto block : myShapeCoordinates)
     {
-        sf::Vector2i blockPosition = sf::Vector2i(currentGridPosition.x + block.x, currentGridPosition.y + block.y + 1);
+        sf::Vector2i blockPosition = sf::Vector2i(currentGridPosition.x + block.x + xOffset, currentGridPosition.y + block.y + yOffset);
         if (!gridManager.IsPositionValid(blockPosition))
         {
-            MarkCellsAsOccupied();
+            if (yOffset == 1) MarkCellsAsOccupied();
             return false;
         }
     }
 
-    sf::Vector2i newPosition = sf::Vector2i(currentGridPosition.x, currentGridPosition.y + 1);
+    sf::Vector2i newPosition = sf::Vector2i(currentGridPosition.x + xOffset, currentGridPosition.y + yOffset);
     currentGridPosition = newPosition;
     return true;
 }

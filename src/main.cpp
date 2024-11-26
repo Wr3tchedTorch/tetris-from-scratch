@@ -49,8 +49,17 @@ int main()
             case sf::Event::KeyPressed:
                 switch (event.key.scancode)
                 {
+                case sf::Keyboard::Scancode::Left:
+                case sf::Keyboard::Scancode::A:
+                    currentTetrominoPointer->MoveLeft();
+                    break;
+                case sf::Keyboard::Scancode::Right:
+                case sf::Keyboard::Scancode::D:
+                    currentTetrominoPointer->MoveRight();
+                    break;
                 case sf::Keyboard::Scancode::Down:
-                    currentTetrominoPointer->SetMovementDelay(defaultMovementDelay / 4.0f);
+                case sf::Keyboard::Scancode::S:
+                    currentTetrominoPointer->SetMovementDelay(defaultMovementDelay / 6.0f);
                     break;
                 case sf::Keyboard::Scancode::R:
                     std::cout << "Rotating tetromino";

@@ -13,9 +13,9 @@ public:
         Blue,
         Green,
         Pink,
-        // Red,
-        // Yellow,
-        // Purple,
+        Red,
+        Yellow,
+        Purple,
         COUNT,
     };
 
@@ -23,6 +23,9 @@ public:
         {TetrominoColor::Blue, {1, 0}},
         {TetrominoColor::Green, {1, 1}},
         {TetrominoColor::Pink, {1, 2}},
+        {TetrominoColor::Red, {1, 8}},
+        {TetrominoColor::Yellow, {1, 9}},
+        {TetrominoColor::Purple, {2, 7}},
     };
 
 private:
