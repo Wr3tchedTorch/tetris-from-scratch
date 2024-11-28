@@ -26,7 +26,7 @@ private:
     sf::Vector2i currentGridPosition = {4, 1};
     sf::RectangleShape body;
 
-    std::vector<sf::Vector2i> myShapeCoordinates;
+    std::vector<sf::Vector2i> blockOffsetCoordinates;
     Shape myShape;
 
     float moveDelay = .65f;
@@ -55,10 +55,11 @@ public:
     void MoveRight();
 
     void SetMovementDelay(float toMoveDelay);
+    void DeleteBlockAtRow(int row);
     bool GetIsOnGround();
 
 private:
     bool Move(int xOffset = 0, int yOffset = 0);
     void MarkCellsAsOccupied();
-    
+    sf::Vector2i GetBlockGlobalGridPosition(sf::Vector2i block);
 };

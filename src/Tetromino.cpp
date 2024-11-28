@@ -5,7 +5,7 @@
 Tetromino::Tetromino(Shape myShape, GridManager &manager, sf::Texture &texture, sf::Vector2i textureCoordinates) : gridManager(manager)
 {
     this->myShape = myShape;
-    myShapeCoordinates = shapeBlockCoordinates.at(this->myShape);
+    blockOffsetCoordinates = shapeBlockCoordinates.at(this->myShape);
 
     body.setTexture(&texture);
     body.setTextureRect(sf::IntRect(textureCoordinates * CELL_SIZE, sf::Vector2i(CELL_SIZE, CELL_SIZE)));
@@ -24,6 +24,51 @@ void Tetromino::Update(float deltaTime)
     }
 }
 
+void Tetromino::SetMovementDelay(float toMoveDelay)
+{
+    moveDelay = std::max(toMoveDelay, 0.0f);
+}
+
+void Tetromino::DeleteBlockAtRow(int row)
+{
+    if (row < 0 || row > ROW_COUNT)
+        return;    
+}
+
+bool Tetromino::GetIsOnGround()
+{
+    return isOnGround;
+}
+
+void Tetromino::Rotate()
+{
+    if (myShape == Shape::O)
+        return;
+
+    std::vector<sf::Vector2i> toCoordinates;
+    toCoordinates.reserve(blockOffsetCoordinates.size());
+
+    for (const auto &blockOffset : blockOffsetCoordinates)
+    {        
+        sf::Vector2i newPos = GetBlockGlobalGridPosition({-blockOffset.y, blockOffset.x});
+        if (!gridManager.IsPositionValid(newPos))
+            return;
+        toCoordinates.push_back(newPos);
+    }
+    blockOffsetCoordinates = toCoordinates;
+}
+
+void Tetromino::Draw(sf::RenderWindow &window)
+{
+    for (auto blockOffset : blockOffsetCoordinates)
+    {
+        sf::Vector2i newBlockPosition = GetBlockGlobalGridPosition(blockOffset);
+
+        body.setPosition(GridManager::GridToPosition(sf::Vector2i(newBlockPosition)));
+        window.draw(body);
+    }
+}
+
 bool Tetromino::MoveDown()
 {
     return Move(0, 1);
@@ -39,67 +84,37 @@ void Tetromino::MoveRight()
     Move(1, 0);
 }
 
-bool Tetromino::Move(int xOffset, int yOffset)
+bool Tetromino::Move(int xQuantity, int yQuantity)
 {
-    for (auto block : myShapeCoordinates)
+    for (auto blockOffset : blockOffsetCoordinates)
     {
-        sf::Vector2i blockPosition = sf::Vector2i(currentGridPosition.x + block.x + xOffset, currentGridPosition.y + block.y + yOffset);
+        sf::Vector2i blockPosition = GetBlockGlobalGridPosition(blockOffset);
+        blockPosition.x += xQuantity;
+        blockPosition.y += yQuantity;
+
         if (!gridManager.IsPositionValid(blockPosition))
         {
-            if (yOffset == 1) MarkCellsAsOccupied();
+            if (yQuantity == 1)
+                MarkCellsAsOccupied();
             return false;
         }
     }
 
-    sf::Vector2i newPosition = sf::Vector2i(currentGridPosition.x + xOffset, currentGridPosition.y + yOffset);
-    currentGridPosition = newPosition;
+    currentGridPosition.x += xQuantity;
+    currentGridPosition.y += yQuantity;
     return true;
-}
-
-void Tetromino::SetMovementDelay(float toMoveDelay)
-{
-    moveDelay = std::max(toMoveDelay, 0.0f);
-}
-
-bool Tetromino::GetIsOnGround()
-{
-    return isOnGround;
 }
 
 void Tetromino::MarkCellsAsOccupied()
 {
-    for (auto block : myShapeCoordinates)
+    for (auto blockOffset : blockOffsetCoordinates)
     {
-        sf::Vector2i blockPosition = sf::Vector2i(currentGridPosition.x + block.x, currentGridPosition.y + block.y);
+        sf::Vector2i blockPosition = GetBlockGlobalGridPosition(blockOffset);
         gridManager.MarkPositionAsOccupied(blockPosition);
     }
 }
 
-void Tetromino::Rotate()
+sf::Vector2i Tetromino::GetBlockGlobalGridPosition(sf::Vector2i blockOffset)
 {
-    if (myShape == Shape::O)
-        return;
-
-    std::vector<sf::Vector2i> toCoordinates;
-    toCoordinates.reserve(myShapeCoordinates.size());
-
-    for (const auto &block : myShapeCoordinates)
-    {
-        sf::Vector2i newPos = {-block.y, block.x};
-        if (!gridManager.IsPositionValid({currentGridPosition.x + newPos.x, currentGridPosition.y + newPos.y}))
-            return;
-        toCoordinates.push_back(newPos);
-    }
-    myShapeCoordinates = toCoordinates;
-}
-
-void Tetromino::Draw(sf::RenderWindow &window)
-{
-    for (auto block : myShapeCoordinates)
-    {
-        sf::Vector2i newBlockPosition = sf::Vector2i(currentGridPosition.x + block.x, currentGridPosition.y + block.y);
-
-        body.setPosition(GridManager::GridToPosition(sf::Vector2i(newBlockPosition)));
-        window.draw(body);
-    }
+    return sf::Vector2i(currentGridPosition.x + blockOffset.x, currentGridPosition.y + blockOffset.y);
 }

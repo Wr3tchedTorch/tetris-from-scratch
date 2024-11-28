@@ -1,4 +1,3 @@
-// TODO: criar função "GetOccupiedRows" na classe GridManager
 // TODO: criar função "DeleteBlockAtRow" na classe Tetromino
 
 #include <SFML/Graphics.hpp>
