@@ -1,3 +1,6 @@
+// TODO: criar função "GetOccupiedRows" na classe GridManager
+// TODO: criar função "DeleteBlockAtRow" na classe Tetromino
+
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <iostream>
@@ -21,12 +24,12 @@ int main()
     sf::Texture blockTexture;
     blockTexture.loadFromFile("assets/block_tiles.png");
 
-    GridManager manager;
+    GridManager gridManager;
     Game gameManager;
 
     float defaultMovementDelay = 0.65f;
 
-    Tetromino *currentTetrominoPointer = gameManager.SpawnRandomTetromino(blockTexture, manager);
+    Tetromino *currentTetrominoPointer = gameManager.SpawnRandomTetromino(blockTexture, gridManager);
 
     sf::Clock clock;
     while (window.isOpen())
@@ -35,7 +38,8 @@ int main()
 
         if (currentTetrominoPointer->GetIsOnGround())
         {
-            currentTetrominoPointer = gameManager.SpawnRandomTetromino(blockTexture, manager);
+            currentTetrominoPointer = gameManager.SpawnRandomTetromino(blockTexture, gridManager);
+            gridManager.GetOccupiedRows();
         }
 
         currentTetrominoPointer->SetMovementDelay(defaultMovementDelay);
@@ -62,12 +66,11 @@ int main()
                     currentTetrominoPointer->SetMovementDelay(defaultMovementDelay / 6.0f);
                     break;
                 case sf::Keyboard::Scancode::R:
-                    std::cout << "Rotating tetromino";
                     currentTetrominoPointer->Rotate();
                     break;
                 }
             }
-        }
+        }        
 
         window.setView(view);
 
