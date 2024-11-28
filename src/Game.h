@@ -34,8 +34,10 @@ private:
 public:
     Game();
 
+    void DeleteRows(std::vector<int> targetRows);
     TetrominoColor GetRandomTetrominoColor();
     Tetromino::Shape GetRandomTetrominoShape();
     Tetromino *SpawnRandomTetromino(sf::Texture &texture, GridManager &gridManager);
+    
     void Draw(sf::RenderWindow &window);
 };

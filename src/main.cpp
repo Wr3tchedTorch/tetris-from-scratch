@@ -1,4 +1,6 @@
-// TODO: criar função "DeleteBlockAtRow" na classe Tetromino
+// !FIX: tetromino blocks not being deleted when a row is fully occupied
+// ! possible cause (Tetromino.cpp:42): 
+// !      blockOffsetCoordinates.erase(blockOffsetCoordinates.begin() + i);
 
 #include <SFML/Graphics.hpp>
 #include <vector>
@@ -38,7 +40,7 @@ int main()
         if (currentTetrominoPointer->GetIsOnGround())
         {
             currentTetrominoPointer = gameManager.SpawnRandomTetromino(blockTexture, gridManager);
-            gridManager.GetOccupiedRows();
+            gameManager.DeleteRows(gridManager.GetOccupiedRows());
         }
 
         currentTetrominoPointer->SetMovementDelay(defaultMovementDelay);

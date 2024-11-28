@@ -32,7 +32,15 @@ void Tetromino::SetMovementDelay(float toMoveDelay)
 void Tetromino::DeleteBlockAtRow(int row)
 {
     if (row < 0 || row > ROW_COUNT)
-        return;    
+        return;
+
+    for (int i = 0; i < blockOffsetCoordinates.size(); i++)
+    {
+        auto blockOffset = blockOffsetCoordinates.at(i);
+        sf::Vector2i blockPosition = GetBlockGlobalGridPosition(blockOffset);
+        if (blockPosition.y == row)
+            blockOffsetCoordinates.erase(blockOffsetCoordinates.begin() + i);
+    }
 }
 
 bool Tetromino::GetIsOnGround()
@@ -50,10 +58,11 @@ void Tetromino::Rotate()
 
     for (const auto &blockOffset : blockOffsetCoordinates)
     {        
-        sf::Vector2i newPos = GetBlockGlobalGridPosition({-blockOffset.y, blockOffset.x});
-        if (!gridManager.IsPositionValid(newPos))
+        sf::Vector2i toBlockOffset = {-blockOffset.y, blockOffset.x};
+        sf::Vector2i toGlobalPosition = GetBlockGlobalGridPosition(toBlockOffset);
+        if (!gridManager.IsPositionValid(toGlobalPosition))
             return;
-        toCoordinates.push_back(newPos);
+        toCoordinates.push_back(toBlockOffset);
     }
     blockOffsetCoordinates = toCoordinates;
 }

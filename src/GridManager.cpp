@@ -24,8 +24,6 @@ sf::Vector2f GridManager::GridToPosition(sf::Vector2i gridPos)
 
 std::vector<int> GridManager::GetOccupiedRows()
 {
-    std::cout << "\nOccupied Rows: ";
-
     std::vector<int> occupiedRows;
 
     int numberOfItemsOnRow = 0;
@@ -39,13 +37,11 @@ std::vector<int> GridManager::GetOccupiedRows()
         }
 
         numberOfItemsOnRow++;
-        
+
         if (numberOfItemsOnRow == COLUMN_COUNT)
         {
-            std::cout << " | " << currentRow << " | ";
             occupiedRows.push_back(currentRow);
         }
-
     }
 
     std::cout << "\n";
