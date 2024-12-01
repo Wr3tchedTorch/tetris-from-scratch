@@ -43,8 +43,6 @@ std::vector<int> GridManager::GetOccupiedRows()
             occupiedRows.push_back(currentRow);
         }
     }
-
-    std::cout << "\n";
     return occupiedRows;
 }
 

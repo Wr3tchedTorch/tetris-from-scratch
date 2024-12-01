@@ -1,3 +1,5 @@
+// !FIX: There still are some bugs when destroying lines, the bug was recorded on 01/12/2024. Watch the footage for more info.
+
 #pragma once
 
 #include <SFML/Graphics.hpp>

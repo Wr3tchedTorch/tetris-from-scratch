@@ -13,9 +13,16 @@ void Game::DeleteRows(std::vector<int> targetRows)
 
     for (auto row : targetRows)
     {
-        for (auto tetromino : tetrominosInTheGame)
+        for (auto &tetromino : tetrominosInTheGame)
         {
-            tetromino.DeleteBlockAtRow(row);
+            tetromino.DeleteBlocksAtRow(row);
+        }
+    }
+    for (auto row : targetRows)
+    {
+        for (auto &tetromino : tetrominosInTheGame)
+        {
+            tetromino.MoveDown();
         }
     }
 }
@@ -34,8 +41,7 @@ Tetromino::Shape Game::GetRandomTetrominoShape()
 
 Tetromino *Game::SpawnRandomTetromino(sf::Texture &texture, GridManager &gridManager)
 {
-    Tetromino::Shape myShape = Tetromino::Shape::O;
-    // Tetromino::Shape myShape = GetRandomTetrominoShape();
+    Tetromino::Shape myShape = GetRandomTetrominoShape();
     Tetromino newTetromino(myShape, gridManager, texture, tetrominoColorToTextureCoordinates.at(GetRandomTetrominoColor()));
     tetrominosInTheGame.push_back(newTetromino);
     return &tetrominosInTheGame.back();

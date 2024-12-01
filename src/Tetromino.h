@@ -19,7 +19,7 @@ public:
         L,
         J,
         COUNT,
-    };    
+    };
 
 private:
     GridManager &gridManager;
@@ -31,7 +31,6 @@ private:
 
     float moveDelay = .65f;
     float totalTime = 0.0f;
-    bool isOnGround;
 
     const std::map<Tetromino::Shape, std::vector<sf::Vector2i>> shapeBlockCoordinates = {
         {Tetromino::Shape::O, {{0, 0}, {1, 0}, {0, 1}, {1, 1}}},
@@ -41,7 +40,7 @@ private:
         {Tetromino::Shape::L, {{0, 0}, {0, -1}, {0, 1}, {1, 1}}},
         {Tetromino::Shape::J, {{0, 0}, {0, -1}, {0, 1}, {-1, 1}}},
         {Tetromino::Shape::T, {{-1, 0}, {0, 0}, {1, 0}, {0, 1}}},
-    };    
+    };
 
 public:
     Tetromino(Shape myShape, GridManager &manager, sf::Texture &texture, sf::Vector2i textureCoordinates = {0, 0});
@@ -55,11 +54,12 @@ public:
     void MoveRight();
 
     void SetMovementDelay(float toMoveDelay);
-    void DeleteBlockAtRow(int row);
-    bool GetIsOnGround();
+    int DeleteBlocksAtRow(int row);
+    bool IsOnGround();
 
 private:
     bool Move(int xOffset = 0, int yOffset = 0);
     void MarkCellsAsOccupied();
+    void RemoveCellsAsOccupied();
     sf::Vector2i GetBlockGlobalGridPosition(sf::Vector2i block);
 };

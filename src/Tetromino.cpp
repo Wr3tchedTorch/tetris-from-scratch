@@ -10,8 +10,6 @@ Tetromino::Tetromino(Shape myShape, GridManager &manager, sf::Texture &texture, 
     body.setTexture(&texture);
     body.setTextureRect(sf::IntRect(textureCoordinates * CELL_SIZE, sf::Vector2i(CELL_SIZE, CELL_SIZE)));
     body.setSize(sf::Vector2f(CELL_SIZE, CELL_SIZE));
-
-    isOnGround = false;
 }
 
 void Tetromino::Update(float deltaTime)
@@ -20,7 +18,7 @@ void Tetromino::Update(float deltaTime)
     if (totalTime >= moveDelay)
     {
         totalTime = 0.0f;
-        isOnGround = !MoveDown();
+        MoveDown();
     }
 }
 
@@ -29,23 +27,39 @@ void Tetromino::SetMovementDelay(float toMoveDelay)
     moveDelay = std::max(toMoveDelay, 0.0f);
 }
 
-void Tetromino::DeleteBlockAtRow(int row)
+int Tetromino::DeleteBlocksAtRow(int row)
 {
     if (row < 0 || row > ROW_COUNT)
-        return;
+        return -1;
 
-    for (int i = 0; i < blockOffsetCoordinates.size(); i++)
+    RemoveCellsAsOccupied();
+    int quantityOfBlocksDeleted = 0;
+    for (int i = blockOffsetCoordinates.size() - 1; i >= 0; i--)
     {
         auto blockOffset = blockOffsetCoordinates.at(i);
         sf::Vector2i blockPosition = GetBlockGlobalGridPosition(blockOffset);
         if (blockPosition.y == row)
+        {
             blockOffsetCoordinates.erase(blockOffsetCoordinates.begin() + i);
+            quantityOfBlocksDeleted++;
+        }
     }
+    return quantityOfBlocksDeleted;
 }
 
-bool Tetromino::GetIsOnGround()
+bool Tetromino::IsOnGround()
 {
-    return isOnGround;
+    for (auto blockOffset : blockOffsetCoordinates)
+    {
+        sf::Vector2i blockPosition = GetBlockGlobalGridPosition(blockOffset);
+        blockPosition.y += 1;
+
+        if (!gridManager.IsPositionValid(blockPosition))
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 void Tetromino::Rotate()
@@ -57,7 +71,7 @@ void Tetromino::Rotate()
     toCoordinates.reserve(blockOffsetCoordinates.size());
 
     for (const auto &blockOffset : blockOffsetCoordinates)
-    {        
+    {
         sf::Vector2i toBlockOffset = {-blockOffset.y, blockOffset.x};
         sf::Vector2i toGlobalPosition = GetBlockGlobalGridPosition(toBlockOffset);
         if (!gridManager.IsPositionValid(toGlobalPosition))
@@ -111,6 +125,8 @@ bool Tetromino::Move(int xQuantity, int yQuantity)
 
     currentGridPosition.x += xQuantity;
     currentGridPosition.y += yQuantity;
+    if (IsOnGround())
+        MarkCellsAsOccupied();
     return true;
 }
 
@@ -120,6 +136,15 @@ void Tetromino::MarkCellsAsOccupied()
     {
         sf::Vector2i blockPosition = GetBlockGlobalGridPosition(blockOffset);
         gridManager.MarkPositionAsOccupied(blockPosition);
+    }
+}
+
+void Tetromino::RemoveCellsAsOccupied()
+{
+    for (auto blockOffset : blockOffsetCoordinates)
+    {
+        sf::Vector2i blockPosition = GetBlockGlobalGridPosition(blockOffset);
+        gridManager.RemovePositionAsOccupied(blockPosition);
     }
 }
 

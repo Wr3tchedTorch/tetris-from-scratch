@@ -28,7 +28,7 @@ int main()
     GridManager gridManager;
     Game gameManager;
 
-    float defaultMovementDelay = 0.65f;
+    float defaultMovementDelay = 0.30f;
 
     Tetromino *currentTetrominoPointer = gameManager.SpawnRandomTetromino(blockTexture, gridManager);
 
@@ -37,7 +37,7 @@ int main()
     {
         float deltaTime = clock.restart().asSeconds();
 
-        if (currentTetrominoPointer->GetIsOnGround())
+        if (currentTetrominoPointer->IsOnGround())
         {
             currentTetrominoPointer = gameManager.SpawnRandomTetromino(blockTexture, gridManager);
             gameManager.DeleteRows(gridManager.GetOccupiedRows());
