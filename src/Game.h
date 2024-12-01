@@ -1,3 +1,5 @@
+// *ADD: Make tetrominos go down smoothly when a line is destroyed. Instead of snapping their position with the grid.
+// ?ADD: A ghost indicator of the tetromino shape where its going to land.
 // !FIX: There still are some bugs when destroying lines, the bug was recorded on 01/12/2024. Watch the footage for more info.
 
 #pragma once
