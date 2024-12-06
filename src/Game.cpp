@@ -1,9 +1,38 @@
+#include <iostream>
 #include <time.h>
 #include "Game.h"
 
 Game::Game()
 {
+    score = 0;
+    if (!tetrisFont.loadFromFile("fonts/Tetris.ttf"))
+        std::cout << "!!! Error: couldn't load Tetris font !!!";
+
+    scoreText.setFont(tetrisFont);
+    scoreText.setPosition(2, 2);
+    scoreText.setScale(0.215f, 0.215f);
+    scoreText.setString("Score: " + std::to_string(score));
+
     srand(time(NULL));
+}
+
+void Game::IncrementScore(int numberOfRowsCleared)
+{
+    switch (numberOfRowsCleared)
+    {
+    case 1:
+        score += SINGLE_LINE_SCORE_AMOUNT;
+        break;
+    case 2:
+        score += DOUBLE_LINE_SCORE_AMOUNT;
+        break;
+    case 3:
+        score += TRIPLE_LINE_SCORE_AMOUNT;
+        break;
+    default:
+        score += TETRIS_LINE_SCORE_AMOUNT;
+    }
+    scoreText.setString("Score: " + std::to_string(score));
 }
 
 void Game::DeleteRows(std::vector<int> targetRows)
@@ -25,6 +54,8 @@ void Game::DeleteRows(std::vector<int> targetRows)
             tetromino.MoveDown();
         }
     }
+
+    IncrementScore(targetRows.size());
 }
 
 Game::TetrominoColor Game::GetRandomTetrominoColor()
@@ -51,4 +82,5 @@ void Game::Draw(sf::RenderWindow &window)
 {
     for (Tetromino &item : tetrominosInTheGame)
         item.Draw(window);
+    window.draw(scoreText);
 }

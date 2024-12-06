@@ -1,6 +1,4 @@
-// !FIX: tetromino blocks not being deleted when a row is fully occupied
-// ! possible cause (Tetromino.cpp:42): 
-// !      blockOffsetCoordinates.erase(blockOffsetCoordinates.begin() + i);
+// *ADD: brief delay before tetromino is set fixed on the ground
 
 #include <SFML/Graphics.hpp>
 #include <vector>
@@ -12,6 +10,8 @@
 #include "Game.h"
 
 static const int WINDOW_ASPECT_RATIO_MULTIPLIER = 4;
+
+int score = 0;
 
 int main()
 {
@@ -28,9 +28,9 @@ int main()
     GridManager gridManager;
     Game gameManager;
 
-    float defaultMovementDelay = 0.30f;
+    float defaultMovementDelay = 0.50f;
 
-    Tetromino *currentTetrominoPointer = gameManager.SpawnRandomTetromino(blockTexture, gridManager);
+    Tetromino *currentTetrominoPointer = gameManager.SpawnRandomTetromino(blockTexture, gridManager);    
 
     sf::Clock clock;
     while (window.isOpen())
@@ -76,6 +76,7 @@ int main()
         window.setView(view);
 
         currentTetrominoPointer->Update(deltaTime);
+
         window.clear();
         gameManager.Draw(window);
         window.display();

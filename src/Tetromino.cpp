@@ -86,7 +86,6 @@ void Tetromino::Draw(sf::RenderWindow &window)
     for (auto blockOffset : blockOffsetCoordinates)
     {
         sf::Vector2i newBlockPosition = GetBlockGlobalGridPosition(blockOffset);
-
         body.setPosition(GridManager::GridToPosition(sf::Vector2i(newBlockPosition)));
         window.draw(body);
     }

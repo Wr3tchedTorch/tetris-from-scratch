@@ -1,6 +1,5 @@
-// *ADD: Make tetrominos go down smoothly when a line is destroyed. Instead of snapping their position with the grid.
-// ?ADD: A ghost indicator of the tetromino shape where its going to land.
-// !FIX: There still are some bugs when destroying lines, the bug was recorded on 01/12/2024. Watch the footage for more info.
+//* ADD: Score system
+//* ADD: Sound effects
 
 #pragma once
 
@@ -10,7 +9,7 @@
 
 class Game
 {
-public:    
+public:
     enum TetrominoColor
     {
         NONE = -1,
@@ -34,14 +33,23 @@ public:
 
 private:
     std::vector<Tetromino> tetrominosInTheGame;
+    int score;
+    const int SINGLE_LINE_SCORE_AMOUNT = 100;
+    const int DOUBLE_LINE_SCORE_AMOUNT = 300;
+    const int TRIPLE_LINE_SCORE_AMOUNT = 600;
+    const int TETRIS_LINE_SCORE_AMOUNT = 1000;
+
+    sf::Text scoreText;
+    sf::Font tetrisFont;
 
 public:
     Game();
 
+    void IncrementScore(int numberOfRowsCleared);
     void DeleteRows(std::vector<int> targetRows);
     TetrominoColor GetRandomTetrominoColor();
     Tetromino::Shape GetRandomTetrominoShape();
     Tetromino *SpawnRandomTetromino(sf::Texture &texture, GridManager &gridManager);
-    
+
     void Draw(sf::RenderWindow &window);
 };
