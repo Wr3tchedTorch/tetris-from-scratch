@@ -1,4 +1,5 @@
 // *ADD: brief delay before tetromino is set fixed on the ground
+// *ADD: increase the tetromino's speed as time goes on inside the game
 
 #include <SFML/Graphics.hpp>
 #include <vector>

@@ -54,7 +54,6 @@ void Game::DeleteRows(std::vector<int> targetRows)
             tetromino.MoveDown();
         }
     }
-
     IncrementScore(targetRows.size());
 }
 
@@ -72,7 +71,8 @@ Tetromino::Shape Game::GetRandomTetrominoShape()
 
 Tetromino *Game::SpawnRandomTetromino(sf::Texture &texture, GridManager &gridManager)
 {
-    Tetromino::Shape myShape = GetRandomTetrominoShape();
+    // Tetromino::Shape myShape = GetRandomTetrominoShape();
+    Tetromino::Shape myShape = Tetromino::Shape::O;
     Tetromino newTetromino(myShape, gridManager, texture, tetrominoColorToTextureCoordinates.at(GetRandomTetrominoColor()));
     tetrominosInTheGame.push_back(newTetromino);
     return &tetrominosInTheGame.back();
