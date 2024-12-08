@@ -14,11 +14,29 @@ Tetromino::Tetromino(Shape myShape, GridManager &manager, sf::Texture &texture, 
 
 void Tetromino::Update(float deltaTime)
 {
-    totalTime += deltaTime;
-    if (totalTime >= moveDelay)
+    moveDelayCounter += deltaTime;
+
+    if (moveDelayCounter >= moveDelay && !startPinDelayTimer)
     {
-        totalTime = 0.0f;
+        moveDelayCounter = 0.0f;
         MoveDown();
+    }
+
+    if (!startPinDelayTimer)
+        return;
+
+    pinDelayCounter += deltaTime;
+
+    if (pinDelayCounter >= pinDelay)
+    {
+        startPinDelayTimer = false;
+        pinDelayCounter = 0.0f;
+
+        if (IsOnGround())
+        {
+            isPinned = true;
+            MarkCellsAsOccupied();
+        }
     }
 }
 
@@ -45,6 +63,11 @@ int Tetromino::DeleteBlocksAtRow(int row)
         }
     }
     return quantityOfBlocksDeleted;
+}
+
+bool Tetromino::GetIsPinned()
+{
+    return isPinned;
 }
 
 bool Tetromino::IsOnGround()
@@ -106,6 +129,24 @@ void Tetromino::MoveRight()
     Move(1, 0);
 }
 
+void Tetromino::MoveAllBlocksDown(int deletedRow)
+{
+    for (auto &blockOffset : blockOffsetCoordinates)
+    {
+        sf::Vector2i blockPosition = GetBlockGlobalGridPosition(blockOffset);
+        if (blockPosition.y > deletedRow)
+            continue;
+
+        blockPosition.y += 1;
+
+        if (!gridManager.IsPositionValid(blockPosition))
+            continue;
+
+        blockOffset.y += 1;
+    }
+    MarkCellsAsOccupied();
+}
+
 bool Tetromino::Move(int xQuantity, int yQuantity)
 {
     for (auto blockOffset : blockOffsetCoordinates)
@@ -120,11 +161,18 @@ bool Tetromino::Move(int xQuantity, int yQuantity)
                 MarkCellsAsOccupied();
             return false;
         }
+
+        sf::Vector2i groundPosition = blockPosition;
+        groundPosition.y += 1;
+        if (!isPinned && !gridManager.IsPositionValid(groundPosition))
+        {
+            startPinDelayTimer = true;
+        }
     }
 
     currentGridPosition.x += xQuantity;
     currentGridPosition.y += yQuantity;
-    if (IsOnGround())
+    if (isPinned)
         MarkCellsAsOccupied();
     return true;
 }

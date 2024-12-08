@@ -1,5 +1,4 @@
-// *ADD: brief delay before tetromino is set fixed on the ground
-// *ADD: increase the tetromino's speed as time goes on inside the game
+// *ADD: refactor the code
 
 #include <SFML/Graphics.hpp>
 #include <vector>
@@ -18,7 +17,7 @@ int main()
 {
     srand(time(NULL));
 
-    sf::RenderWindow window(sf::VideoMode(CELL_SIZE * COLUMN_COUNT * WINDOW_ASPECT_RATIO_MULTIPLIER, CELL_SIZE * ROW_COUNT * WINDOW_ASPECT_RATIO_MULTIPLIER), "CMake SFML Project");
+    sf::RenderWindow window(sf::VideoMode(CELL_SIZE * COLUMN_COUNT * WINDOW_ASPECT_RATIO_MULTIPLIER, CELL_SIZE * ROW_COUNT * WINDOW_ASPECT_RATIO_MULTIPLIER), "Tetris from scratch in C++");
     window.setFramerateLimit(144);
 
     sf::View view(sf::Vector2f(CELL_SIZE * COLUMN_COUNT / 2, CELL_SIZE * ROW_COUNT / 2), sf::Vector2f(CELL_SIZE * COLUMN_COUNT, CELL_SIZE * ROW_COUNT));
@@ -29,19 +28,35 @@ int main()
     GridManager gridManager;
     Game gameManager;
 
-    float defaultMovementDelay = 0.50f;
+    float defaultMovementDelay = .50f;
+    Tetromino *currentTetrominoPointer = gameManager.SpawnRandomTetromino(blockTexture, gridManager);
 
-    Tetromino *currentTetrominoPointer = gameManager.SpawnRandomTetromino(blockTexture, gridManager);    
+    float minMovementDelay = 0.06f;
+
+    float movementDelayMultiplier = 0.90f;
+    float movementDelayIncreaseDelayCounter = 0.0f;
+    float movementDelayIncreaseDelay = 2.0f;
 
     sf::Clock clock;
     while (window.isOpen())
     {
         float deltaTime = clock.restart().asSeconds();
 
-        if (currentTetrominoPointer->IsOnGround())
+        movementDelayIncreaseDelayCounter += deltaTime;
+        if (movementDelayIncreaseDelayCounter >= movementDelayIncreaseDelay)
         {
-            currentTetrominoPointer = gameManager.SpawnRandomTetromino(blockTexture, gridManager);
+            movementDelayIncreaseDelayCounter = 0.0f;
+            
+            if (defaultMovementDelay * movementDelayMultiplier >= minMovementDelay)
+                defaultMovementDelay *= movementDelayMultiplier;
+            else
+                defaultMovementDelay = minMovementDelay;
+        }
+
+        if (currentTetrominoPointer->GetIsPinned())
+        {
             gameManager.DeleteRows(gridManager.GetOccupiedRows());
+            currentTetrominoPointer = gameManager.SpawnRandomTetromino(blockTexture, gridManager);
         }
 
         currentTetrominoPointer->SetMovementDelay(defaultMovementDelay);
@@ -72,7 +87,7 @@ int main()
                     break;
                 }
             }
-        }        
+        }
 
         window.setView(view);
 
